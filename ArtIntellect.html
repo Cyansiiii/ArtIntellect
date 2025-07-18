@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.8/dist/lenis.css">
     <!-- Chosen Palette: Modern Tech -->
     <!-- Application Structure Plan: The application structure remains a narrative-driven proposal but with a significant focus on dynamic presentation and micro-interactions. 1. Hero Section: Now features a canvas-based particle animation and text animations to create an immediate "wow" factor. 2. Sticky Header: A glassmorphism header that stays on top for easy navigation. 3. Animated Sections: All sections now fade and slide into view on scroll using an Intersection Observer for a modern, fluid experience. 4. Interactive Cards: Cards now have a 3D tilt effect on hover, making the UI feel more tangible. 5. Upgraded Simulator: Includes a more polished UI and a typewriter effect for AI-generated responses, enhancing the feeling of interacting with an intelligent system. 6. Animated Tech Stack: The ADO diagram now animates into view, with connectors drawing themselves to visually explain the workflow. This structure enhances the original narrative flow with engaging animations and interactions, making the content more digestible and impressive. -->
     <!-- Visualization & Content Choices: 1. Particle Animation: A vanilla JS particle system on a canvas is added to the hero background for visual appeal without impacting performance. Goal: Impress/Engage. 2. Scroll Animations: Vanilla JS Intersection Observer to trigger CSS animations. Goal: Guide user focus and add dynamism. 3. 3D Tilt Effect: CSS transforms on cards. Goal: Enhance interactivity and engagement. 4. Typewriter Effect: A JS function to simulate typing for AI responses. Goal: Make AI interaction feel more conversational and dynamic. 5. Animated SVG Connectors: The ADO diagram uses CSS animations to "draw" the connecting lines, making the technical architecture easier to follow. -->
@@ -85,7 +86,23 @@
         }
     </style>
 </head>
-<body class="animated-gradient">
+<body
+ class="animated-gradient">
+    <script src="https://unpkg.com/lenis@1.3.8/dist/lenis.min.js"></script>
+    <script>
+      // Lenis smooth scroll initialization
+      const lenis = new Lenis({
+        lerp: 0.08,
+        smooth: true,
+        direction: 'vertical',
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+    </script>
     <div class="min-h-screen">
         <header id="header" class="py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200/50">
             <div class="max-w-6xl mx-auto flex justify-between items-center">
