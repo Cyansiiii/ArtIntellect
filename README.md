@@ -204,9 +204,4 @@ For questions or collaboration, reach out via:
 GitHub Issues: https://github.com/Cyansiiii/ArtIntellect/issues
 
 
-
-Andromeda Community: [Insert relevant community link]
-
-
-
 ArtIntellect: Unlocking the value of creativity through AI and DeFi.
