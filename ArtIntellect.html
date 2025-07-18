@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtIntellect: AI-Powered IP Royalty Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Creative Tech -->
+    <!-- Application Structure Plan: The application is designed as a narrative-driven project proposal, guiding the user from a high-level concept to technical details. The structure is: 1. Hero Section: Grabs attention with the core value proposition. 2. Problem/Solution: Establishes the 'why' and introduces ArtIntellect as the answer. 3. Interactive Concept Explorer: A tabbed interface to break down the complex process into four digestible steps (Tokenize, Value, Fractionalize, Trade), making the user journey logical and easy to follow. 4. A new "Universe of Assets" section to showcase the wide range of supported IP. 5. Interactive Simulator: A hands-on section to make the abstract concept tangible. Users can change inputs from a now-expanded list of IP types and see outputs update in real-time on charts, promoting engagement and understanding. This section now includes Gemini-powered features for marketing and risk analysis. 6. Tech Stack Breakdown: A visual diagram built with HTML/CSS to clearly show how Andromeda's ADOs are interconnected. 7. Value Proposition: Summarizes benefits for both key user personas. This structure was chosen to turn a project idea into an interactive story, enhancing comprehension and making the proposal more impactful. -->
+    <!-- Visualization & Content Choices: 1. Problem Statement: Simple, high-contrast text cards. Goal: Inform. Method: HTML/CSS. 2. Concept Explorer: Tabbed view. Goal: Organize. Method: HTML/JS. 3. Universe of Assets: A grid of cards with icons. Goal: Inform/Impress. Method: HTML/CSS. Justification: Visually breaks down the diverse IP categories for quick comprehension. 4. Interactive Simulator: Dropdowns/sliders controlling charts. Goal: Relationships & Change. Method: Chart.js with HTML inputs and JS logic, now with more IP options. This is enhanced with two Gemini API calls to generate marketing ideas and analyze investment risks. Justification: Demonstrates a practical application of AI in the RWA/DeFi context with a wider data set. 5. ADO Tech Stack Diagram: A flowchart built using styled HTML divs. Goal: Organize & Inform. Method: HTML/CSS with JS for hover effects. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #333333;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #5F9EA0;
+            color: white;
+            border-color: #5F9EA0;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        .ado-diagram-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .ado-diagram-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .ado-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .ado-diagram-item:hover .ado-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .gemini-output {
+            min-height: 150px;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #FF3D00;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen">
+        <header class="py-6 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-[#5F9EA0]">ArtIntellect</h1>
+                <a href="#simulator" class="bg-[#F08080] text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-80 transition">Try Simulator</a>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <section class="text-center mb-20">
+                <h2 class="text-4xl md:text-6xl font-extrabold mb-4">Monetize Creativity, <span class="text-[#5F9EA0]">Intelligently</span>.</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    ArtIntellect is a decentralized protocol on Andromeda that transforms the full spectrum of Intellectual Property into a liquid, investable asset class. We use AI and DeFi primitives to unlock the true value of creativity.
+                </p>
+            </section>
+
+            <section class="mb-20">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl font-bold">The Challenge for Modern Creators</h3>
+                     <p class="text-gray-600 mt-2">Creators and innovators face significant barriers in leveraging their most valuable assets.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 rounded-2xl text-center">
+                        <div class="text-4xl mb-4">🔒</div>
+                        <h4 class="font-bold text-lg mb-2">Illiquid Assets</h4>
+                        <p class="text-gray-600 text-sm">Future royalties from music, books, or patents are valuable but locked up and hard to access for upfront capital.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl text-center">
+                        <div class="text-4xl mb-4">🤔</div>
+                        <h4 class="font-bold text-lg mb-2">Opaque Valuation</h4>
+                        <p class="text-gray-600 text-sm">Determining a fair, data-driven market price for a new piece of IP is complex, often relying on guesswork.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl text-center">
+                        <div class="text-4xl mb-4">💸</div>
+                        <h4 class="font-bold text-lg mb-2">Complex Revenue</h4>
+                        <p class="text-gray-600 text-sm">Royalty collection and distribution is often slow, inefficient, and lacks transparency for all stakeholders.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-20">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl font-bold">The ArtIntellect Solution</h3>
+                     <p class="text-gray-600 mt-2">A seamless, automated flow from creation to monetization, powered by Andromeda.</p>
+                </div>
+                <div>
+                    <div class="mb-8 flex justify-center flex-wrap gap-2">
+                        <button id="tab-1" class="tab-btn active px-4 py-2 border rounded-full font-semibold">1. Tokenize IP</button>
+                        <button id="tab-2" class="tab-btn px-4 py-2 border rounded-full font-semibold">2. AI Valuation</button>
+                        <button id="tab-3" class="tab-btn px-4 py-2 border rounded-full font-semibold">3. Fractionalize</button>
+                        <button id="tab-4" class="tab-btn px-4 py-2 border rounded-full font-semibold">4. Automate & Trade</button>
+                    </div>
+                    <div class="glass-card rounded-2xl p-8 min-h-[250px] flex items-center">
+                        <div id="content-1" class="tab-content">
+                            <h4 class="font-bold text-xl mb-2 text-[#5F9EA0]">Mint Your IP as a Digital Asset</h4>
+                            <p class="text-gray-700">A creator (musician, author, inventor) registers their intellectual property on ArtIntellect. This action mints a unique CW721 token (NFT) on the Andromeda blockchain, representing the undisputed ownership and origin of the master rights to that IP. This creates a permanent, verifiable record of the asset.</p>
+                        </div>
+                        <div id="content-2" class="tab-content hidden">
+                            <h4 class="font-bold text-xl mb-2 text-[#5F9EA0]">Predictive Value Analysis</h4>
+                            <p class="text-gray-700">Our integrated AI oracle analyzes vast datasets—market trends, genre popularity, social media sentiment, and historical performance of similar assets—to generate a transparent valuation and predict the IP's future revenue potential. This provides a fair, data-driven foundation for its price.</p>
+                        </div>
+                        <div id="content-3" class="tab-content hidden">
+                           <h4 class="font-bold text-xl mb-2 text-[#5F9EA0]">Fractionalize for Community Ownership</h4>
+                           <p class="text-gray-700">Based on the AI valuation, the creator fractionalizes a portion of their IP's future royalty stream into CW20 tokens. These "royalty shares" are then offered to fans and investors through a Crowdfund ADO, allowing the creator to raise capital while giving their community a stake in their success.</p>
+                        </div>
+                        <div id="content-4" class="tab-content hidden">
+                           <h4 class="font-bold text-xl mb-2 text-[#5F9EA0]">Automated Royalties & Liquid Markets</h4>
+                           <p class="text-gray-700">All incoming royalties are automatically sent to a Splitter ADO, which instantly and transparently distributes the funds to the creator and all CW20 token holders. These fractional tokens can be freely traded on an integrated Marketplace or in AMM pools, creating a liquid secondary market for IP assets.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-20">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl font-bold">A Universe of Tokenizable Assets</h3>
+                     <p class="text-gray-600 mt-2">ArtIntellect is built to support the full spectrum of human creativity and innovation.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">🎨</div>
+                        <h4 class="font-bold text-md">Creative Arts</h4>
+                        <p class="text-xs text-gray-500">Music, Films, Digital Art, Photography</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">📚</div>
+                        <h4 class="font-bold text-md">Literary Works</h4>
+                        <p class="text-xs text-gray-500">Books, Scripts, Articles, Poetry</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">💡</div>
+                        <h4 class="font-bold text-md">Inventions</h4>
+                        <p class="text-xs text-gray-500">Patents, Software, Tech Designs</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">🏛️</div>
+                        <h4 class="font-bold text-md">Designs</h4>
+                        <p class="text-xs text-gray-500">Industrial, Fashion, Architectural</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">®️</div>
+                        <h4 class="font-bold text-md">Trademarks</h4>
+                        <p class="text-xs text-gray-500">Brand Logos, Slogans, Identifiers</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">🎭</div>
+                        <h4 class="font-bold text-md">Performances</h4>
+                        <p class="text-xs text-gray-500">Concerts, Theatre, Live Recordings</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">🎙️</div>
+                        <h4 class="font-bold text-md">Digital Content</h4>
+                        <p class="text-xs text-gray-500">Podcasts, VR/AR, Game Assets</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-sm text-center transition hover:shadow-lg hover:-translate-y-1">
+                        <div class="text-4xl mb-3">➕</div>
+                        <h4 class="font-bold text-md">And More...</h4>
+                        <p class="text-xs text-gray-500">Any verifiable source of future revenue.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="simulator" class="mb-20 bg-white rounded-2xl p-8 shadow-lg">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl font-bold">Interactive Simulator & AI Tools</h3>
+                     <p class="text-gray-600 mt-2">See our AI valuation in practice and leverage Gemini for deeper insights.</p>
+                </div>
+                <div class="grid lg:grid-cols-5 gap-8 items-start">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div>
+                            <label for="ipType" class="font-semibold block mb-2">Type of Intellectual Property</label>
+                            <select id="ipType" class="w-full p-2 border rounded-lg bg-gray-50">
+                                <option value="music">Music Album</option>
+                                <option value="book">Sci-Fi Novel</option>
+                                <option value="patent">Green Tech Patent</option>
+                                <option value="digital_art">Digital Art (NFT)</option>
+                                <option value="blueprint">Architectural Blueprint</option>
+                                <option value="podcast">Podcast Series</option>
+                                <option value="trademark">Brand Trademark</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="hypeSlider" class="font-semibold block mb-2">Initial Hype & Marketing (<span id="hypeValue">70</span>%)</label>
+                            <input type="range" id="hypeSlider" min="10" max="100" value="70" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: #F08080;">
+                        </div>
+                        <div>
+                           <label class="font-semibold block mb-2">Creator's Share</label>
+                           <div class="p-4 bg-gray-100 rounded-lg text-center">
+                               <p class="text-2xl font-bold text-[#20B2AA]" id="creatorShare">70%</p>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="w-full">
+                            <h4 class="font-bold text-center mb-2">AI 5-Year Revenue Forecast</h4>
+                            <div class="chart-container h-64 md:h-80">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="w-full flex flex-col items-center">
+                            <h4 class="font-bold text-center mb-2">Ownership Split</h4>
+                            <div class="chart-container h-64 md:h-80 w-4/5 max-w-xs">
+                                <canvas id="ownershipChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 grid md:grid-cols-2 gap-8">
+                    <div>
+                        <button id="generateMarketing" class="w-full bg-[#5F9EA0] text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+                            ✨ Generate Marketing Angles
+                        </button>
+                        <div id="marketingOutput" class="gemini-output mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700">Click the button above to generate marketing ideas for your project.</div>
+                    </div>
+                    <div>
+                        <button id="analyzeRisks" class="w-full bg-[#F08080] text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+                            ✨ Analyze Investment Risks
+                        </button>
+                        <div id="risksOutput" class="gemini-output mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700">Click the button above for an AI-powered risk analysis for investors.</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-16">
+                 <div class="text-center mb-12">
+                     <h3 class="text-3xl font-bold">Built with Andromeda DeFi Legos</h3>
+                     <p class="text-gray-600 mt-2">ArtIntellect seamlessly integrates Andromeda's core ADOs to create a robust and automated system.</p>
+                </div>
+                <div class="relative p-8 flex flex-col items-center space-y-12 md:space-y-0">
+                    <div class="flex flex-col md:flex-row justify-around w-full max-w-4xl items-center">
+                        <div class="ado-diagram-item bg-white p-4 rounded-lg shadow-md text-center w-40">
+                            <h5 class="font-bold">CW721</h5>
+                            <p class="text-xs text-gray-500">IP NFT</p>
+                            <div class="ado-tooltip absolute bottom-full mb-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 text-center">Represents unique ownership of the Intellectual Property.</div>
+                        </div>
+                        <div class="hidden md:block text-gray-500 text-2xl font-bold">→</div>
+                        <div class="md:hidden text-gray-500 text-2xl font-bold my-4">↓</div>
+                        <div class="ado-diagram-item bg-white p-4 rounded-lg shadow-md text-center w-40">
+                            <h5 class="font-bold">Crowdfund v2</h5>
+                            <p class="text-xs text-gray-500">Public Sale</p>
+                             <div class="ado-tooltip absolute bottom-full mb-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 text-center">Manages the public sale of fractional ownership tokens (CW20s).</div>
+                        </div>
+                        <div class="hidden md:block text-gray-500 text-2xl font-bold">→</div>
+                         <div class="md:hidden text-gray-500 text-2xl font-bold my-4">↓</div>
+                        <div class="ado-diagram-item bg-white p-4 rounded-lg shadow-md text-center w-40">
+                            <h5 class="font-bold">CW20</h5>
+                            <p class="text-xs text-gray-500">Fractional Shares</p>
+                             <div class="ado-tooltip absolute bottom-full mb-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 text-center">Fungible tokens representing a share of future royalty revenue.</div>
+                        </div>
+                    </div>
+                     <div class="text-gray-500 text-2xl font-bold my-4">↓</div>
+                    <div class="flex flex-col-reverse md:flex-row justify-around w-full max-w-4xl items-center">
+                         <div class="ado-diagram-item bg-white p-4 rounded-lg shadow-md text-center w-40">
+                            <h5 class="font-bold">Marketplace</h5>
+                            <p class="text-xs text-gray-500">Secondary Trading</p>
+                             <div class="ado-tooltip absolute top-full mt-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 text-center">Enables peer-to-peer trading of the CW20 royalty shares.</div>
+                        </div>
+                        <div class="hidden md:block text-gray-500 text-2xl font-bold">←</div>
+                         <div class="md:hidden text-gray-500 text-2xl font-bold my-4">↑</div>
+                         <div class="ado-diagram-item bg-white p-4 rounded-lg shadow-md text-center w-40">
+                            <h5 class="font-bold">Splitter</h5>
+                            <p class="text-xs text-gray-500">Revenue Distribution</p>
+                             <div class="ado-tooltip absolute top-full mt-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 text-center">Automatically distributes incoming royalties to all CW20 token holders.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-white mt-20">
+            <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+                <p>ArtIntellect Project Proposal for Andromeda Hackathon.</p>
+                <p class="text-sm">Bridging Real World Assets and Automated DeFi.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const target = tab.id.replace('tab-', 'content-');
+                    contents.forEach(content => {
+                        if (content.id === target) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const ipTypeSelect = document.getElementById('ipType');
+            const hypeSlider = document.getElementById('hypeSlider');
+            const hypeValueSpan = document.getElementById('hypeValue');
+            const creatorShareEl = document.getElementById('creatorShare');
+
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const ownershipCtx = document.getElementById('ownershipChart').getContext('2d');
+
+            let revenueChart, ownershipChart;
+
+            const baseData = {
+                music: [10, 30, 60, 80, 70],
+                book: [5, 15, 40, 65, 90],
+                patent: [20, 25, 30, 40, 100],
+                digital_art: [80, 50, 120, 60, 90],
+                blueprint: [15, 20, 25, 30, 35],
+                podcast: [5, 10, 25, 50, 80],
+                trademark: [40, 45, 50, 55, 60]
+            };
+
+            function createRevenueChart(data) {
+                if (revenueChart) {
+                    revenueChart.destroy();
+                }
+                revenueChart = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                        datasets: [{
+                            label: 'Predicted Revenue (in $1000s)',
+                            data: data,
+                            borderColor: '#5F9EA0',
+                            backgroundColor: 'rgba(95, 158, 160, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                });
+            }
+
+            function createOwnershipChart(creatorShare) {
+                if (ownershipChart) {
+                    ownershipChart.destroy();
+                }
+                const publicShare = 100 - creatorShare;
+                ownershipChart = new Chart(ownershipCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Creator Share', 'Public Sale'],
+                        datasets: [{
+                            data: [creatorShare, publicShare],
+                            backgroundColor: ['#20B2AA', '#F08080'],
+                            borderColor: '#F8F7F4',
+                            borderWidth: 4,
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, cutout: '70%' }
+                });
+            }
+
+            function updateSimulator() {
+                const ipType = ipTypeSelect.value;
+                const hypeValue = parseInt(hypeSlider.value);
+                hypeValueSpan.textContent = hypeValue;
+
+                const base = baseData[ipType];
+                const modifier = hypeValue / 100 + 0.5;
+                const revenueData = base.map(d => Math.round(d * modifier));
+
+                const creatorShare = Math.max(30, 90 - Math.round(hypeValue / 2));
+                creatorShareEl.textContent = `${creatorShare}%`;
+
+                createRevenueChart(revenueData);
+                createOwnershipChart(creatorShare);
+            }
+
+            ipTypeSelect.addEventListener('change', updateSimulator);
+            hypeSlider.addEventListener('input', updateSimulator);
+
+            updateSimulator();
+
+            const generateMarketingBtn = document.getElementById('generateMarketing');
+            const analyzeRisksBtn = document.getElementById('analyzeRisks');
+            const marketingOutput = document.getElementById('marketingOutput');
+            const risksOutput = document.getElementById('risksOutput');
+
+            const callGeminiAPI = async (prompt) => {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "Sorry, I couldn't generate a response. The model's output was empty.";
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    return `Sorry, an error occurred while contacting the AI model: ${error.message}. Please check the console for details.`;
+                }
+            };
+
+            generateMarketingBtn.addEventListener('click', async () => {
+                const ipType = ipTypeSelect.options[ipTypeSelect.selectedIndex].text;
+                const hypeLevel = hypeSlider.value > 75 ? "very high" : hypeSlider.value > 50 ? "high" : "moderate";
+                
+                const prompt = `You are a creative marketing strategist. Brainstorm 3 distinct and creative marketing angles for a new "${ipType}". The initial public hype is currently ${hypeLevel}. For each angle, provide a catchy slogan and a brief (1-2 sentence) description of the campaign idea. Format the output as clean HTML using <h4> for slogans and <p> for descriptions.`;
+                
+                marketingOutput.innerHTML = `<div class="flex justify-center items-center h-full"><div class="loader"></div></div>`;
+                const response = await callGeminiAPI(prompt);
+                marketingOutput.innerHTML = response;
+            });
+
+            analyzeRisksBtn.addEventListener('click', async () => {
+                const ipType = ipTypeSelect.options[ipTypeSelect.selectedIndex].text;
+                const hypeLevel = hypeSlider.value > 75 ? "very high" : hypeSlider.value > 50 ? "high" : "moderate";
+
+                const prompt = `You are a savvy investment analyst specializing in alternative assets. Provide a brief risk analysis for an investor considering buying fractional ownership in a new "${ipType}". The initial public hype is ${hypeLevel}. List 3 key potential risks and a brief (1-sentence) mitigation strategy for each. Format the output as an HTML unordered list (<ul>) with each list item (<li>) containing the risk in bold followed by the mitigation strategy.`;
+
+                risksOutput.innerHTML = `<div class="flex justify-center items-center h-full"><div class="loader"></div></div>`;
+                const response = await callGeminiAPI(prompt);
+                risksOutput.innerHTML = response;
+            });
+        });
+    </script>
+</body>
+</html>
