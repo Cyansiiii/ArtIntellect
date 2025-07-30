@@ -140,7 +140,7 @@ ArtIntellect Project Proposal
 This project was developed for the Andromeda Hackathon, bridging real-world assets with automated DeFi to empower creators and investors.
 
 Getting Started
-
+Website Link - https://artintellectai.netlify.app/
 
 
 
@@ -195,7 +195,9 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 Contact
 
-For questions or collaboration, reach out via:
+For questions or collaboration, reach out via: insta - anantanandam,linkedin - www.linkedin.com/in/anant-anandam-2a5b67330
+
+Website Link - https://artintellectai.netlify.app/
 
 
 
